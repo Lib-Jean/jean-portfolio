@@ -1,0 +1,45 @@
+export const projectGroups = {
+  design: {
+    label: 'Portfolio',
+    code: 'D—01',
+    description: 'Industrial, product and interaction systems shaped around real human behavior.',
+    accent: '#ff5a1f',
+    projects: [
+      { title: 'Tactile Signal', type: 'Industrial Design', year: '2026', date: '2026-08', month: 'AUG', keywords: ['mobility', 'research', 'CMF'], tone: 'clay', pdf: '/pdf/tactile-signal.pdf' },
+      { title: 'Domestic Loop', type: 'Product System', year: '2026', date: '2026-05', month: 'MAY', keywords: ['circularity', 'system', 'prototype'], tone: 'mustard', pdf: '/pdf/domestic-loop.pdf' },
+      { title: 'Quiet Interface', type: 'UI / UX', year: '2025', date: '2025-12', month: 'DEC', keywords: ['accessibility', 'UI', 'behavior'], tone: 'graphite', pdf: '/pdf/quiet-interface.pdf' },
+      { title: 'Common Ground', type: 'Service Design', year: '2025', date: '2025-09', month: 'SEP', keywords: ['community', 'service', 'mapping'], tone: 'moss', pdf: '/pdf/common-ground.pdf' },
+      { title: 'Soft Machine', type: 'Interaction Design', year: '2025', date: '2025-06', month: 'JUN', keywords: ['gesture', 'haptics', 'motion'], tone: 'orange', pdf: '/pdf/soft-machine.pdf' },
+      { title: 'Field Object 07', type: 'Industrial Design', year: '2024', date: '2024-11', month: 'NOV', keywords: ['outdoor', 'modular', 'tool'], tone: 'sand', pdf: '/pdf/field-object-07.pdf' },
+      { title: 'Threshold', type: 'Spatial UI', year: '2024', date: '2024-04', month: 'APR', keywords: ['exhibition', 'sensor', 'narrative'], tone: 'acid', pdf: '/pdf/threshold.pdf' },
+    ],
+  },
+  photography: {
+    label: 'Photography',
+    code: 'P—02',
+    description: 'Observations of surfaces, distance, people and accidental geometry.',
+    accent: '#b9d92b',
+    projects: [
+      { title: 'Passing Light', type: 'Photo Essay', year: '2026', date: '2026-07', month: 'JUL', keywords: ['light', 'transit', 'city'], tone: 'silver', pdf: '/pdf/passing-light.pdf' },
+      { title: 'After Rain', type: 'Photography', year: '2025', date: '2025-11', month: 'NOV', keywords: ['street', 'reflection', 'night'], tone: 'blue', pdf: '/pdf/after-rain.pdf' },
+      { title: 'Human Scale', type: 'Portrait Study', year: '2025', date: '2025-08', month: 'AUG', keywords: ['portrait', 'gesture', 'space'], tone: 'clay', pdf: '/pdf/human-scale.pdf' },
+      { title: 'Found Structures', type: 'Photo Archive', year: '2025', date: '2025-05', month: 'MAY', keywords: ['material', 'detail', 'grid'], tone: 'graphite', pdf: '/pdf/found-structures.pdf' },
+      { title: 'Pacific / 04', type: 'Landscape', year: '2024', date: '2024-09', month: 'SEP', keywords: ['coast', 'distance', 'film'], tone: 'moss', pdf: '/pdf/pacific-04.pdf' },
+      { title: 'Blue Hour', type: 'Photo Series', year: '2024', date: '2024-03', month: 'MAR', keywords: ['color', 'quiet', 'twilight'], tone: 'blue', pdf: '/pdf/blue-hour.pdf' },
+    ],
+  },
+  art: {
+    label: 'Fine Art',
+    code: 'A—03',
+    description: 'Material-led studies across oil, watercolor and lacquer painting.',
+    accent: '#d7b832',
+    projects: [
+      { title: 'Lacquer Memory', type: 'Lacquer Painting', year: '2026', date: '2026-06', month: 'JUN', keywords: ['layer', 'time', 'surface'], tone: 'lacquer', pdf: '/pdf/lacquer-memory.pdf' },
+      { title: 'Still / Moving', type: 'Oil Painting', year: '2025', date: '2025-12', month: 'DEC', keywords: ['oil', 'body', 'motion'], tone: 'orange', pdf: '/pdf/still-moving.pdf' },
+      { title: 'Water Holds Sky', type: 'Watercolor', year: '2025', date: '2025-09', month: 'SEP', keywords: ['water', 'atmosphere', 'paper'], tone: 'blue', pdf: '/pdf/water-holds-sky.pdf' },
+      { title: 'Study in Ochre', type: 'Oil Study', year: '2025', date: '2025-04', month: 'APR', keywords: ['ochre', 'composition', 'form'], tone: 'mustard', pdf: '/pdf/study-in-ochre.pdf' },
+      { title: 'Garden Index', type: 'Mixed Media', year: '2024', date: '2024-10', month: 'OCT', keywords: ['botanical', 'archive', 'marks'], tone: 'moss', pdf: '/pdf/garden-index.pdf' },
+      { title: 'Negative Room', type: 'Painting Series', year: '2024', date: '2024-02', month: 'FEB', keywords: ['space', 'black', 'absence'], tone: 'graphite', pdf: '/pdf/negative-room.pdf' },
+    ],
+  },
+};
