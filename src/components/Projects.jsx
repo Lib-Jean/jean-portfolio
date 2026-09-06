@@ -9,6 +9,7 @@ const folderDefaults = [
 ];
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const reduceMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 function DraggableFolder({ groupKey, index, selected, onOpen }) {
   const group = projectGroups[groupKey];
@@ -32,7 +33,11 @@ function DraggableFolder({ groupKey, index, selected, onOpen }) {
   };
 
   const pointerMove = (event) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    event.currentTarget.style.setProperty('--cursor-x', `${event.clientX - bounds.left}px`);
+    event.currentTarget.style.setProperty('--cursor-y', `${event.clientY - bounds.top}px`);
     if (!drag.current || drag.current.id !== event.pointerId) return;
+    if (event.pointerType === 'touch') return;
     const dx = event.clientX - drag.current.startX;
     const dy = event.clientY - drag.current.startY;
     drag.current.distance = Math.hypot(dx, dy);
@@ -56,8 +61,10 @@ function DraggableFolder({ groupKey, index, selected, onOpen }) {
       className={`spatial-folder spatial-folder-${index + 1} ${dragging ? 'is-dragging' : ''} ${selected ? 'is-extracting' : ''}`}
       style={{
         '--folder-x': `${position.x}px`,
+        '--folder-center-x': `${position.x * .28}px`,
         '--folder-y': `${position.y}px`,
         '--folder-rotate': `${position.rotate}deg`,
+        '--folder-hover-rotate': `${position.rotate * .55}deg`,
         '--folder-accent': group.accent,
       }}
       onPointerDown={pointerDown}
@@ -66,6 +73,8 @@ function DraggableFolder({ groupKey, index, selected, onOpen }) {
       onPointerCancel={() => { drag.current = null; setDragging(false); }}
       onClick={(event) => { if (event.detail === 0) onOpen(groupKey); }}
       aria-label={`Open ${group.label} archive`}
+      aria-expanded={selected}
+      aria-controls="project-timeline"
     >
       <span className="spatial-folder-back"><i /></span>
       <span className="spatial-folder-tab">{group.code}</span>
@@ -75,6 +84,7 @@ function DraggableFolder({ groupKey, index, selected, onOpen }) {
         <em>DRAG / CLICK TO OPEN</em>
       </span>
       <span className="spatial-folder-edge" />
+      <span className="folder-cursor-label" aria-hidden="true">OPEN {group.label.toUpperCase()}</span>
     </button>
   );
 }
@@ -90,7 +100,8 @@ function TimelineArchive({ groupKey, language, onClose }) {
   const wheelLock = useRef(0);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setEntered(true), 2350);
+    const enterDelay = reduceMotion() ? 0 : (window.matchMedia('(max-width: 760px)').matches ? 1100 : 2350);
+    const timer = window.setTimeout(() => setEntered(true), enterDelay);
     return () => window.clearTimeout(timer);
   }, []);
 
@@ -177,13 +188,47 @@ export default function Projects({ language = 'en' }) {
   const [openGroup, setOpenGroup] = useState(null);
   const [openingGroup, setOpeningGroup] = useState(null);
 
+  useEffect(() => {
+    if (!openGroup) return undefined;
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') {
+        setOpenGroup(null);
+        window.setTimeout(() => setOpeningGroup(null), reduceMotion() ? 0 : 360);
+      }
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [openGroup]);
+
   const openFolder = (groupKey) => {
     if (openingGroup || openGroup) return;
+    document.getElementById('project-archive-room')?.scrollIntoView({
+      behavior: reduceMotion() ? 'auto' : 'smooth',
+      block: 'center',
+    });
     setOpeningGroup(groupKey);
     window.setTimeout(() => {
       setOpenGroup(groupKey);
-      setOpeningGroup(null);
-    }, 820);
+    }, reduceMotion() ? 0 : 920);
+  };
+
+  const closeFolder = () => {
+    setOpenGroup(null);
+    window.setTimeout(() => setOpeningGroup(null), reduceMotion() ? 0 : 360);
+  };
+
+  const moveScene = (event) => {
+    if (event.pointerType === 'touch' || openingGroup || openGroup) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = clamp((event.clientX - bounds.left) / bounds.width - .5, -.5, .5);
+    const y = clamp((event.clientY - bounds.top) / bounds.height - .5, -.5, .5);
+    event.currentTarget.style.setProperty('--scene-x', `${x * 10}px`);
+    event.currentTarget.style.setProperty('--scene-y', `${y * 6}px`);
+  };
+
+  const resetScene = (event) => {
+    event.currentTarget.style.setProperty('--scene-x', '0px');
+    event.currentTarget.style.setProperty('--scene-y', '0px');
   };
 
   return (
@@ -195,8 +240,13 @@ export default function Projects({ language = 'en' }) {
           <i>PORTFOLIO / PHOTOGRAPHY / FINE ART</i>
         </div>
 
-        {!openGroup ? (
-          <div className="spatial-room">
+        <div
+          className={`spatial-room ${openingGroup ? 'has-selection' : ''} ${openGroup ? 'has-open-archive' : ''}`}
+          id="project-archive-room"
+          onPointerMove={moveScene}
+          onPointerLeave={resetScene}
+        >
+          <div className="archive-box-scene" aria-hidden={Boolean(openGroup)}>
             <div className="room-horizon" />
             <div className="box-ground-shadow" />
             <div className="dimensional-box">
@@ -215,9 +265,12 @@ export default function Projects({ language = 'en' }) {
             </div>
             <p className="spatial-instruction"><span>↔</span> {language === 'cn' ? '文件夹可在箱内拖动 · 点击打开' : 'FOLDERS ARE DRAGGABLE · CLICK TO OPEN'}</p>
           </div>
-        ) : (
-          <TimelineArchive groupKey={openGroup} language={language} onClose={() => setOpenGroup(null)} />
-        )}
+          {openGroup && (
+            <div className="archive-open-layer" id="project-timeline">
+              <TimelineArchive groupKey={openGroup} language={language} onClose={closeFolder} />
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
